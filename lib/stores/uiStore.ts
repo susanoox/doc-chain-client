@@ -1,68 +1,73 @@
-import { create } from 'zustand';
+import { create } from "zustand";
 
 interface UIState {
-  // Sidebar
-  sidebarOpen: boolean;
-  sidebarCollapsed: boolean;
-  
-  // Modals
-  activeModal: string | null;
-  modalData: any;
-  
-  // Theme
-  theme: 'light' | 'dark' | 'system';
-  
-  // Actions
-  toggleSidebar: () => void;
-  setSidebarOpen: (open: boolean) => void;
-  toggleSidebarCollapse: () => void;
-  openModal: (modalId: string, data?: any) => void;
-  closeModal: () => void;
-  setTheme: (theme: 'light' | 'dark' | 'system') => void;
+   // Sidebar
+   sidebarOpen: boolean;
+   sidebarCollapsed: boolean;
+
+   // Modals
+   activeModal: string | null;
+   modalData: any;
+
+   // Theme
+   theme: "light" | "dark" | "system";
+
+   // Actions
+   toggleSidebar: () => void;
+   setSidebarOpen: (open: boolean) => void;
+   toggleSidebarCollapse: () => void;
+   openModal: (modalId: string, data?: any) => void;
+   closeModal: () => void;
+   setTheme: (theme: "light" | "dark" | "system") => void;
 }
 
 export const useUIStore = create<UIState>((set) => ({
-  sidebarOpen: true,
-  sidebarCollapsed: false,
-  activeModal: null,
-  modalData: null,
-  theme: 'system',
+   sidebarOpen: true,
+   sidebarCollapsed: false,
+   activeModal: null,
+   modalData: null,
+   theme: "system",
 
-  toggleSidebar: () => set((state) => ({ sidebarOpen: !state.sidebarOpen })),
-  
-  setSidebarOpen: (open) => set({ sidebarOpen: open }),
-  
-  toggleSidebarCollapse: () => set((state) => ({ 
-    sidebarCollapsed: !state.sidebarCollapsed 
-  })),
+   toggleSidebar: () => set((state) => ({ sidebarOpen: !state.sidebarOpen })),
 
-  openModal: (modalId, data) => set({ 
-    activeModal: modalId, 
-    modalData: data 
-  }),
+   setSidebarOpen: (open) => set({ sidebarOpen: open }),
 
-  closeModal: () => set({ 
-    activeModal: null, 
-    modalData: null 
-  }),
+   toggleSidebarCollapse: () =>
+      set((state) => ({
+         sidebarCollapsed: !state.sidebarCollapsed,
+      })),
 
-  setTheme: (theme) => {
-    set({ theme });
-    
-    // Apply theme to document
-    const root = document.documentElement;
-    if (theme === 'dark') {
-      root.classList.add('dark');
-    } else if (theme === 'light') {
-      root.classList.remove('dark');
-    } else {
-      // System theme
-      const isDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
-      if (isDark) {
-        root.classList.add('dark');
+   openModal: (modalId, data) =>
+      set({
+         activeModal: modalId,
+         modalData: data,
+      }),
+
+   closeModal: () =>
+      set({
+         activeModal: null,
+         modalData: null,
+      }),
+
+   setTheme: (theme) => {
+      set({ theme });
+
+      // Apply theme to document
+      const root = document.documentElement;
+      if (theme === "dark") {
+         root.classList.add("dark");
+      } else if (theme === "light") {
+         root.classList.remove("dark");
       } else {
-        root.classList.remove('dark');
+         // System theme
+         const isDark = window.matchMedia(
+            "(prefers-color-scheme: dark)"
+         ).matches;
+         if (isDark) {
+            root.classList.add("dark");
+         } else {
+            root.classList.remove("dark");
+         }
       }
-    }
-  },
+   },
 }));

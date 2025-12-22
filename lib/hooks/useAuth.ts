@@ -1,31 +1,31 @@
-import { useAuthStore } from '@/lib/stores/authStore';
+import { useAuthStore } from "@/lib/stores/authStore";
 
 export const useAuth = () => {
-  const {
-    user,
-    isAuthenticated,
-    isLoading,
-    error,
-    login,
-    register,
-    logout,
-    forgotPassword,
-    resetPassword,
-    checkAuth,
-    clearError,
-  } = useAuthStore();
+   const {
+      user,
+      isAuthenticated,
+      isLoading,
+      error,
+      login,
+      register,
+      logout,
+      forgotPassword,
+      resetPassword,
+      checkAuth,
+      clearError,
+   } = useAuthStore();
 
-  return {
-    user,
-    isAuthenticated,
-    isLoading,
-    error,
-    login,
-    register,
-    logout,
-    forgotPassword,
-    resetPassword,
-    checkAuth,
-    clearError,
-  };
+   return {
+      user,
+      isAuthenticated,
+      isLoading,
+      error,
+      login,
+      register,
+      logout,
+      forgotPassword,
+      resetPassword,
+      checkAuth,
+      clearError,
+   };
 };

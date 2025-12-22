@@ -1,42 +1,42 @@
-import { ReactNode } from 'react';
-import { cn } from '@/lib/utils';
+import { ReactNode } from "react";
+import { cn } from "@/lib/utils";
 
 interface EmptyStateProps {
-  icon?: ReactNode;
-  title: string;
-  description?: string;
-  action?: ReactNode;
-  className?: string;
+   icon?: ReactNode;
+   title: string;
+   description?: string;
+   action?: ReactNode;
+   className?: string;
 }
 
 export function EmptyState({
-  icon,
-  title,
-  description,
-  action,
-  className,
+   icon,
+   title,
+   description,
+   action,
+   className,
 }: EmptyStateProps) {
-  return (
-    <div
-      className={cn(
-        'flex flex-col items-center justify-center py-12 px-4 text-center',
-        className
-      )}
-    >
-      {icon && (
-        <div className="mb-4 text-[var(--muted-foreground)] opacity-50">
-          {icon}
-        </div>
-      )}
-      <h3 className="text-lg font-semibold text-[var(--foreground)] mb-2">
-        {title}
-      </h3>
-      {description && (
-        <p className="text-sm text-[var(--muted-foreground)] mb-6 max-w-md">
-          {description}
-        </p>
-      )}
-      {action && <div>{action}</div>}
-    </div>
-  );
+   return (
+      <div
+         className={cn(
+            "flex flex-col items-center justify-center py-12 px-4 text-center",
+            className
+         )}
+      >
+         {icon && (
+            <div className='mb-4 text-[var(--muted-foreground)] opacity-50'>
+               {icon}
+            </div>
+         )}
+         <h3 className='text-lg font-semibold text-[var(--foreground)] mb-2'>
+            {title}
+         </h3>
+         {description && (
+            <p className='text-sm text-[var(--muted-foreground)] mb-6 max-w-md'>
+               {description}
+            </p>
+         )}
+         {action && <div>{action}</div>}
+      </div>
+   );
 }
