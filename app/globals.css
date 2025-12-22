@@ -80,6 +80,32 @@
   --sidebar-accent-foreground: oklch(0.21 0.006 285.885);
   --sidebar-border: oklch(0.92 0.004 286.32);
   --sidebar-ring: oklch(0.705 0.015 286.067);
+  
+  /* Blockchain theme */
+  --blockchain-primary: oklch(0.65 0.15 240);
+  --blockchain-secondary: oklch(0.75 0.12 240);
+  --blockchain-success: oklch(0.70 0.15 162);
+  --blockchain-warning: oklch(0.75 0.15 80);
+  --blockchain-glow: oklch(0.70 0.15 240 / 0.2);
+  
+  /* AI theme */
+  --ai-primary: oklch(0.65 0.15 280);
+  --ai-secondary: oklch(0.75 0.12 280);
+  --ai-accent: oklch(0.70 0.15 300);
+  --ai-glow: oklch(0.70 0.15 280 / 0.2);
+  
+  /* Status colors */
+  --status-success: var(--blockchain-success);
+  --status-error: var(--destructive);
+  --status-warning: var(--blockchain-warning);
+  --status-info: oklch(0.70 0.15 220);
+  
+  /* Semantic colors */
+  --protected: var(--blockchain-success);
+  --unprotected: var(--blockchain-warning);
+  --verified: var(--status-success);
+  --pending: var(--status-warning);
+  --failed: var(--status-error);
 }
 
 .dark {
@@ -114,6 +140,16 @@
   --sidebar-accent-foreground: oklch(0.985 0 0);
   --sidebar-border: oklch(1 0 0 / 10%);
   --sidebar-ring: oklch(0.552 0.016 285.938);
+  
+  /* Blockchain theme - dark mode */
+  --blockchain-primary: oklch(0.70 0.15 240);
+  --blockchain-secondary: oklch(0.60 0.12 240);
+  --blockchain-glow: oklch(0.70 0.15 240 / 0.3);
+  
+  /* AI theme - dark mode */
+  --ai-primary: oklch(0.70 0.15 280);
+  --ai-secondary: oklch(0.60 0.12 280);
+  --ai-glow: oklch(0.70 0.15 280 / 0.3);
 }
 
 @layer base {
@@ -122,5 +158,91 @@
   }
   body {
     @apply bg-background text-foreground;
+  }
+}
+
+@layer utilities {
+  /* Blockchain utilities */
+  .bg-blockchain {
+    background-color: var(--blockchain-primary);
+  }
+  .text-blockchain {
+    color: var(--blockchain-primary);
+  }
+  .border-blockchain {
+    border-color: var(--blockchain-primary);
+  }
+  .shadow-blockchain {
+    box-shadow: 0 0 20px var(--blockchain-glow);
+  }
+  
+  /* AI utilities */
+  .bg-ai {
+    background-color: var(--ai-primary);
+  }
+  .text-ai {
+    color: var(--ai-primary);
+  }
+  .border-ai {
+    border-color: var(--ai-primary);
+  }
+  .shadow-ai {
+    box-shadow: 0 0 20px var(--ai-glow);
+  }
+  
+  /* Status utilities */
+  .bg-protected {
+    background-color: var(--protected);
+  }
+  .text-protected {
+    color: var(--protected);
+  }
+  .bg-verified {
+    background-color: var(--verified);
+  }
+  .text-verified {
+    color: var(--verified);
+  }
+  .bg-pending {
+    background-color: var(--pending);
+  }
+  .text-pending {
+    color: var(--pending);
+  }
+  .bg-failed {
+    background-color: var(--failed);
+  }
+  .text-failed {
+    color: var(--failed);
+  }
+}
+
+@layer animations {
+  @keyframes blockchain-pulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.6; }
+  }
+  
+  @keyframes hash-generating {
+    0% { transform: scale(1); }
+    50% { transform: scale(1.1); }
+    100% { transform: scale(1); }
+  }
+  
+  @keyframes ai-thinking {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-5px); }
+  }
+  
+  .animate-blockchain-pulse {
+    animation: blockchain-pulse 2s ease-in-out infinite;
+  }
+  
+  .animate-hash-generating {
+    animation: hash-generating 1s ease-in-out infinite;
+  }
+  
+  .animate-ai-thinking {
+    animation: ai-thinking 1.5s ease-in-out infinite;
   }
 }
