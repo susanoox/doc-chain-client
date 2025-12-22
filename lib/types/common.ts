@@ -20,12 +20,24 @@ export interface ApiError {
 
 export interface Activity {
    id: string;
-   type: "upload" | "share" | "delete" | "verify" | "edit" | "view";
+   type:
+      | "upload"
+      | "share"
+      | "delete"
+      | "verify"
+      | "edit"
+      | "view"
+      | "blockchain_verify"
+      | "protect"
+      | "unprotect"
+      | "user_add"
+      | "settings";
    userId: string;
    userName: string;
    userAvatar?: string;
    documentId?: string;
    documentTitle?: string;
+   message: string;
    description: string;
    timestamp: Date;
    metadata?: Record<string, any>;

@@ -1,4 +1,10 @@
-export type SuggestionType = "tag" | "share" | "action" | "insight";
+export type SuggestionType =
+   | "tag"
+   | "share"
+   | "action"
+   | "insight"
+   | "organization"
+   | "security";
 export type InsightSeverity = "info" | "warning" | "critical";
 
 export interface AISuggestion {
