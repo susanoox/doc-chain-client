@@ -49,9 +49,9 @@ export const AISuggestions: FC<AISuggestionsProps> = ({
    const displaySuggestions = suggestions.slice(0, maxItems);
 
    const getConfidenceColor = (confidence: number) => {
-      if (confidence >= 0.9) return "text-[var(--success)]";
-      if (confidence >= 0.7) return "text-[var(--info)]";
-      return "text-[var(--warning)]";
+      if (confidence >= 0.9) return "text-(--success)";
+      if (confidence >= 0.7) return "text-(--info)";
+      return "text-(--warning)";
    };
 
    const getSuggestionIcon = (type: string) => {
@@ -80,7 +80,7 @@ export const AISuggestions: FC<AISuggestionsProps> = ({
                      className='p-4 rounded-lg border bg-card hover:bg-accent/50 transition-colors'
                   >
                      <div className='flex items-start gap-3'>
-                        <div className='w-8 h-8 rounded-full bg-ai/10 text-ai flex items-center justify-center flex-shrink-0 mt-0.5'>
+                        <div className='w-8 h-8 rounded-full bg-ai/10 text-ai flex items-center justify-center shrink-0 mt-0.5'>
                            {getSuggestionIcon(suggestion.type)}
                         </div>
                         <div className='flex-1 min-w-0'>

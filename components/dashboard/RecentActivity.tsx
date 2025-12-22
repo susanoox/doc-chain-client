@@ -69,15 +69,15 @@ const activityIcons: Record<string, React.ReactNode> = {
 };
 
 const activityColors: Record<string, string> = {
-   upload: "bg-[var(--success)]/10 text-[var(--success)]",
-   share: "bg-[var(--info)]/10 text-[var(--info)]",
+   upload: "bg-(--success)/10 text-(--success)",
+   share: "bg-(--info)/10 text-(--info)",
    blockchain_verify: "bg-blockchain/10 text-blockchain",
-   edit: "bg-[var(--warning)]/10 text-[var(--warning)]",
-   delete: "bg-[var(--error)]/10 text-[var(--error)]",
+   edit: "bg-(--warning)/10 text-(--warning)",
+   delete: "bg-(--error)/10 text-(--error)",
    protect: "bg-blockchain/10 text-blockchain",
-   unprotect: "bg-[var(--warning)]/10 text-[var(--warning)]",
-   user_add: "bg-[var(--success)]/10 text-[var(--success)]",
-   settings: "bg-[var(--info)]/10 text-[var(--info)]",
+   unprotect: "bg-(--warning)/10 text-(--warning)",
+   user_add: "bg-(--success)/10 text-(--success)",
+   settings: "bg-(--info)/10 text-(--info)",
 };
 
 export const RecentActivity: FC<RecentActivityProps> = ({
@@ -105,7 +105,7 @@ export const RecentActivity: FC<RecentActivityProps> = ({
                   >
                      <div
                         className={cn(
-                           "w-8 h-8 rounded-full flex items-center justify-center flex-shrink-0",
+                           "w-8 h-8 rounded-full flex items-center justify-center shrink-0",
                            activityColors[activity.type] ||
                               activityColors.settings
                         )}

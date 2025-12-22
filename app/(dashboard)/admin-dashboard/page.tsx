@@ -110,7 +110,7 @@ export default function AdminDashboardPage() {
          <div className='grid gap-4 md:grid-cols-3'>
             <div className='p-6 rounded-lg border bg-card'>
                <div className='flex items-center gap-3 mb-3'>
-                  <div className='p-3 rounded-lg bg-[var(--info)]/10 text-[var(--info)]'>
+                  <div className='p-3 rounded-lg bg-(--info)/10 text-(--info)'>
                      <Server size={20} />
                   </div>
                   <div>
@@ -125,7 +125,7 @@ export default function AdminDashboardPage() {
 
             <div className='p-6 rounded-lg border bg-card'>
                <div className='flex items-center gap-3 mb-3'>
-                  <div className='p-3 rounded-lg bg-[var(--success)]/10 text-[var(--success)]'>
+                  <div className='p-3 rounded-lg bg-(--success)/10 text-(--success)'>
                      <Database size={20} />
                   </div>
                   <div>
@@ -140,7 +140,7 @@ export default function AdminDashboardPage() {
 
             <div className='p-6 rounded-lg border bg-card'>
                <div className='flex items-center gap-3 mb-3'>
-                  <div className='p-3 rounded-lg bg-[var(--warning)]/10 text-[var(--warning)]'>
+                  <div className='p-3 rounded-lg bg-(--warning)/10 text-(--warning)'>
                      <Lock size={20} />
                   </div>
                   <div>

@@ -33,28 +33,28 @@ export const SystemOverview = () => {
          value: 156,
          change: { value: 12, isPositive: true },
          icon: <Users size={20} />,
-         color: "text-[var(--info)]",
+         color: "text-(--info)",
       },
       {
          label: "Total Documents",
          value: "2,453",
          change: { value: 8, isPositive: true },
          icon: <FileText size={20} />,
-         color: "text-[var(--success)]",
+         color: "text-(--success)",
       },
       {
          label: "Storage Used",
          value: "245 GB",
          change: { value: 15, isPositive: false },
          icon: <HardDrive size={20} />,
-         color: "text-[var(--warning)]",
+         color: "text-(--warning)",
       },
       {
          label: "System Uptime",
          value: "99.8%",
          change: { value: 0.2, isPositive: true },
          icon: <Activity size={20} />,
-         color: "text-[var(--success)]",
+         color: "text-(--success)",
       },
    ];
 
@@ -77,8 +77,8 @@ export const SystemOverview = () => {
                            className={cn(
                               "text-xs font-medium flex items-center gap-1",
                               metric.change.isPositive
-                                 ? "text-[var(--success)]"
-                                 : "text-[var(--error)]"
+                                 ? "text-(--success)"
+                                 : "text-(--error)"
                            )}
                         >
                            <TrendingUp
@@ -115,42 +115,42 @@ export const SystemOverview = () => {
          <div className='space-y-3'>
             <h3 className='text-sm font-medium'>System Health</h3>
 
-            <div className='flex items-center justify-between p-3 rounded-lg bg-[var(--success)]/10 border border-[var(--success)]/20'>
+            <div className='flex items-center justify-between p-3 rounded-lg bg-(--success)/10 border border-(--success)/20'>
                <div className='flex items-center gap-2'>
-                  <CheckCircle2 size={16} className='text-[var(--success)]' />
+                  <CheckCircle2 size={16} className='text-(--success)' />
                   <span className='text-sm font-medium'>API Services</span>
                </div>
                <Badge
                   variant='outline'
-                  className='text-[var(--success)] border-[var(--success)]'
+                  className='text-(--success) border-(--success)'
                >
                   Operational
                </Badge>
             </div>
 
-            <div className='flex items-center justify-between p-3 rounded-lg bg-[var(--success)]/10 border border-[var(--success)]/20'>
+            <div className='flex items-center justify-between p-3 rounded-lg bg-(--success)/10 border border-(--success)/20'>
                <div className='flex items-center gap-2'>
-                  <CheckCircle2 size={16} className='text-[var(--success)]' />
+                  <CheckCircle2 size={16} className='text-(--success)' />
                   <span className='text-sm font-medium'>
                      Blockchain Network
                   </span>
                </div>
                <Badge
                   variant='outline'
-                  className='text-[var(--success)] border-[var(--success)]'
+                  className='text-(--success) border-(--success)'
                >
                   Connected
                </Badge>
             </div>
 
-            <div className='flex items-center justify-between p-3 rounded-lg bg-[var(--warning)]/10 border border-[var(--warning)]/20'>
+            <div className='flex items-center justify-between p-3 rounded-lg bg-(--warning)/10 border border-(--warning)/20'>
                <div className='flex items-center gap-2'>
-                  <Clock size={16} className='text-[var(--warning)]' />
+                  <Clock size={16} className='text-(--warning)' />
                   <span className='text-sm font-medium'>Backup Service</span>
                </div>
                <Badge
                   variant='outline'
-                  className='text-[var(--warning)] border-[var(--warning)]'
+                  className='text-(--warning) border-(--warning)'
                >
                   In Progress
                </Badge>

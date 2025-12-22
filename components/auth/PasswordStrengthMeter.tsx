@@ -18,10 +18,10 @@ export const PasswordStrengthMeter: FC<PasswordStrengthMeterProps> = ({
    if (!password) return null;
 
    const getStrengthColor = (score: number) => {
-      if (score < 2) return "bg-[var(--error)]";
-      if (score < 3) return "bg-[var(--warning)]";
-      if (score < 4) return "bg-[var(--info)]";
-      return "bg-[var(--success)]";
+      if (score < 2) return "bg-(--error)";
+      if (score < 3) return "bg-(--warning)";
+      if (score < 4) return "bg-(--info)";
+      return "bg-(--success)";
    };
 
    const getStrengthText = (score: number) => {

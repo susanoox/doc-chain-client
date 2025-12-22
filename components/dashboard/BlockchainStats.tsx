@@ -28,9 +28,9 @@ export const BlockchainStats: FC<BlockchainStatsProps> = ({
          : 0;
 
    const getHealthColor = () => {
-      if (networkHealth >= 90) return "text-[var(--success)]";
-      if (networkHealth >= 70) return "text-[var(--warning)]";
-      return "text-[var(--error)]";
+      if (networkHealth >= 90) return "text-(--success)";
+      if (networkHealth >= 70) return "text-(--warning)";
+      return "text-(--error)";
    };
 
    const getHealthBadgeVariant = () => {
@@ -69,7 +69,7 @@ export const BlockchainStats: FC<BlockchainStatsProps> = ({
          {/* Stats Grid */}
          <div className='grid grid-cols-3 gap-4'>
             <div className='text-center'>
-               <div className='flex items-center justify-center w-10 h-10 mx-auto rounded-full bg-[var(--success)]/10 text-[var(--success)] mb-2'>
+               <div className='flex items-center justify-center w-10 h-10 mx-auto rounded-full bg-(--success)/10 text-(--success) mb-2'>
                   <CheckCircle2 size={20} />
                </div>
                <p className='text-2xl font-bold'>{protectedDocuments}</p>
@@ -77,7 +77,7 @@ export const BlockchainStats: FC<BlockchainStatsProps> = ({
             </div>
 
             <div className='text-center'>
-               <div className='flex items-center justify-center w-10 h-10 mx-auto rounded-full bg-[var(--warning)]/10 text-[var(--warning)] mb-2'>
+               <div className='flex items-center justify-center w-10 h-10 mx-auto rounded-full bg-(--warning)/10 text-(--warning) mb-2'>
                   <Clock size={20} />
                </div>
                <p className='text-2xl font-bold'>{pendingVerifications}</p>
@@ -89,7 +89,7 @@ export const BlockchainStats: FC<BlockchainStatsProps> = ({
                   className={cn(
                      "flex items-center justify-center w-10 h-10 mx-auto rounded-full mb-2",
                      failedVerifications > 0
-                        ? "bg-[var(--error)]/10 text-[var(--error)]"
+                        ? "bg-(--error)/10 text-(--error)"
                         : "bg-muted text-muted-foreground"
                   )}
                >

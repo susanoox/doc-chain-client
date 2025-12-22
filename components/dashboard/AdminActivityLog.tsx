@@ -82,11 +82,11 @@ export const AdminActivityLog = () => {
    const getSeverityColor = (severity: string) => {
       switch (severity) {
          case "high":
-            return "bg-[var(--error)]/10 text-[var(--error)]";
+            return "bg-(--error)/10 text-(--error)";
          case "medium":
-            return "bg-[var(--warning)]/10 text-[var(--warning)]";
+            return "bg-(--warning)/10 text-(--warning)";
          default:
-            return "bg-[var(--info)]/10 text-[var(--info)]";
+            return "bg-(--info)/10 text-(--info)";
       }
    };
 
@@ -119,7 +119,7 @@ export const AdminActivityLog = () => {
                >
                   <div className='flex items-start gap-3'>
                      <div
-                        className={`w-8 h-8 rounded-full flex items-center justify-center flex-shrink-0 ${getSeverityColor(
+                        className={`w-8 h-8 rounded-full flex items-center justify-center shrink-0 ${getSeverityColor(
                            activity.severity
                         )}`}
                      >

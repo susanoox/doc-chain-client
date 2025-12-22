@@ -44,9 +44,9 @@ export const StatsCard: FC<StatsCardProps> = ({
 
       switch (trend.direction) {
          case "up":
-            return "text-[var(--success)]";
+            return "text-(--success)";
          case "down":
-            return "text-[var(--error)]";
+            return "text-(--error)";
          default:
             return "text-muted-foreground";
       }
@@ -59,11 +59,11 @@ export const StatsCard: FC<StatsCardProps> = ({
          case "ai":
             return "border-ai/20 bg-ai/5";
          case "success":
-            return "border-[var(--success)]/20 bg-[var(--success)]/5";
+            return "border-(--success)/20 bg-(--success)/5";
          case "warning":
-            return "border-[var(--warning)]/20 bg-[var(--warning)]/5";
+            return "border-(--warning)/20 bg-(--warning)/5";
          case "error":
-            return "border-[var(--error)]/20 bg-[var(--error)]/5";
+            return "border-(--error)/20 bg-(--error)/5";
          default:
             return "";
       }
@@ -103,12 +103,9 @@ export const StatsCard: FC<StatsCardProps> = ({
                   variant === "blockchain" &&
                      "bg-blockchain/10 text-blockchain",
                   variant === "ai" && "bg-ai/10 text-ai",
-                  variant === "success" &&
-                     "bg-[var(--success)]/10 text-[var(--success)]",
-                  variant === "warning" &&
-                     "bg-[var(--warning)]/10 text-[var(--warning)]",
-                  variant === "error" &&
-                     "bg-[var(--error)]/10 text-[var(--error)]",
+                  variant === "success" && "bg-(--success)/10 text-(--success)",
+                  variant === "warning" && "bg-(--warning)/10 text-(--warning)",
+                  variant === "error" && "bg-(--error)/10 text-(--error)",
                   variant === "default" && "bg-primary/10 text-primary"
                )}
             >
