@@ -14,6 +14,8 @@ export interface Document {
    blockchainVerified: boolean;
    isEncrypted: boolean;
    isFavorite: boolean;
+   isDeleted: boolean;
+   deletedAt?: Date;
    createdAt: Date;
    updatedAt: Date;
    version: number;

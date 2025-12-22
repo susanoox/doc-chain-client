@@ -54,6 +54,10 @@ interface DocumentState {
    deleteDocument: (id: string) => Promise<void>;
    deleteMultiple: (ids: string[]) => Promise<void>;
 
+   // Actions - Trash management
+   restoreDocument: (id: string) => Promise<void>;
+   permanentlyDeleteDocument: (id: string) => Promise<void>;
+
    // Actions - Blockchain
    verifyBlockchain: (id: string) => Promise<void>;
 
@@ -152,6 +156,7 @@ const mockDocuments: Document[] = [
       blockchainVerified: true,
       isEncrypted: true,
       isFavorite: true,
+      isDeleted: false,
       createdAt: new Date("2024-12-01"),
       updatedAt: new Date("2024-12-15"),
       version: 3,
@@ -175,6 +180,7 @@ const mockDocuments: Document[] = [
       blockchainVerified: true,
       isEncrypted: false,
       isFavorite: false,
+      isDeleted: false,
       createdAt: new Date("2024-11-15"),
       updatedAt: new Date("2024-12-10"),
       version: 5,
@@ -195,6 +201,7 @@ const mockDocuments: Document[] = [
       blockchainVerified: false,
       isEncrypted: false,
       isFavorite: true,
+      isDeleted: false,
       createdAt: new Date("2024-10-20"),
       updatedAt: new Date("2024-12-18"),
       version: 12,
@@ -217,6 +224,7 @@ const mockDocuments: Document[] = [
       blockchainVerified: true,
       isEncrypted: true,
       isFavorite: false,
+      isDeleted: false,
       createdAt: new Date("2024-12-20"),
       updatedAt: new Date("2024-12-20"),
       version: 1,
@@ -239,6 +247,7 @@ const mockDocuments: Document[] = [
       blockchainVerified: true,
       isEncrypted: false,
       isFavorite: true,
+      isDeleted: false,
       createdAt: new Date("2024-11-01"),
       updatedAt: new Date("2024-12-05"),
       version: 7,
@@ -260,6 +269,7 @@ const mockDocuments: Document[] = [
       blockchainVerified: true,
       isEncrypted: true,
       isFavorite: false,
+      isDeleted: false,
       createdAt: new Date("2024-12-10"),
       updatedAt: new Date("2024-12-12"),
       version: 2,
@@ -281,6 +291,7 @@ const mockDocuments: Document[] = [
       blockchainVerified: false,
       isEncrypted: false,
       isFavorite: false,
+      isDeleted: false,
       createdAt: new Date("2024-12-05"),
       updatedAt: new Date("2024-12-19"),
       version: 4,
@@ -301,6 +312,7 @@ const mockDocuments: Document[] = [
       blockchainVerified: false,
       isEncrypted: false,
       isFavorite: true,
+      isDeleted: false,
       createdAt: new Date("2024-12-01"),
       updatedAt: new Date("2024-12-22"),
       version: 8,
@@ -751,6 +763,71 @@ export const useDocumentStore = create<DocumentState>((set, get) => ({
                error instanceof Error
                   ? error.message
                   : "Failed to toggle favorite",
+            isLoading: false,
+         });
+         throw error;
+      }
+   },
+
+   restoreDocument: async (documentId) => {
+      set({ isLoading: true, error: null });
+      try {
+         const response = await fetch(`/api/documents/${documentId}/restore`, {
+            method: "POST",
+         });
+
+         if (!response.ok) throw new Error("Failed to restore document");
+
+         set((state) => ({
+            documents: state.documents.map((doc) =>
+               doc.id === documentId
+                  ? { ...doc, isDeleted: false, deletedAt: undefined }
+                  : doc
+            ),
+            isLoading: false,
+         }));
+      } catch (error) {
+         set({
+            error:
+               error instanceof Error
+                  ? error.message
+                  : "Failed to restore document",
+            isLoading: false,
+         });
+         throw error;
+      }
+   },
+
+   permanentlyDeleteDocument: async (documentId) => {
+      set({ isLoading: true, error: null });
+      try {
+         const response = await fetch(
+            `/api/documents/${documentId}/permanent`,
+            {
+               method: "DELETE",
+            }
+         );
+
+         if (!response.ok)
+            throw new Error("Failed to permanently delete document");
+
+         set((state) => ({
+            documents: state.documents.filter((doc) => doc.id !== documentId),
+            selectedDocuments: state.selectedDocuments.filter(
+               (id) => id !== documentId
+            ),
+            currentDocument:
+               state.currentDocument?.id === documentId
+                  ? null
+                  : state.currentDocument,
+            isLoading: false,
+         }));
+      } catch (error) {
+         set({
+            error:
+               error instanceof Error
+                  ? error.message
+                  : "Failed to permanently delete document",
             isLoading: false,
          });
          throw error;
