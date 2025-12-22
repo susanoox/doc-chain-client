@@ -96,7 +96,7 @@ export const LoginForm: FC = () => {
          });
 
          toast.success("Welcome back!", "Login successful");
-         
+
          // Use setTimeout to ensure state is updated before redirect
          setTimeout(() => {
             router.push(redirectTo);

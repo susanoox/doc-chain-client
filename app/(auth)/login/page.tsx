@@ -8,7 +8,11 @@ export default function LoginPage() {
          title='Welcome back'
          subtitle='Sign in to your DocChain account'
       >
-         <Suspense fallback={<div className="flex justify-center py-8">Loading...</div>}>
+         <Suspense
+            fallback={
+               <div className='flex justify-center py-8'>Loading...</div>
+            }
+         >
             <LoginForm />
          </Suspense>
       </AuthLayout>
