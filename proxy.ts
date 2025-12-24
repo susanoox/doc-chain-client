@@ -12,7 +12,7 @@ const publicRoutes = [
 // Define admin-only routes
 const adminRoutes = ["/admin"];
 
-export function middleware(request: NextRequest) {
+export default function proxy(request: NextRequest) {
    const { pathname } = request.nextUrl;
 
    // Skip middleware in development with mock auth
