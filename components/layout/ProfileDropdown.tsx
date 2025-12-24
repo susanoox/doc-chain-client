@@ -88,9 +88,7 @@ export const ProfileDropdown: FC = () => {
                   Settings
                </DropdownMenuItem>
                {user.role === "admin" && (
-                  <DropdownMenuItem
-                     onClick={() => router.push("/admin")}
-                  >
+                  <DropdownMenuItem onClick={() => router.push("/admin")}>
                      <ShieldCheck size={16} className='mr-2' />
                      Admin Dashboard
                   </DropdownMenuItem>

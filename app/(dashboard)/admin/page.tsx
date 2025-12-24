@@ -29,8 +29,8 @@ export default function AdminDashboardPage() {
 
    if (isLoading) {
       return (
-         <div className="flex items-center justify-center min-h-screen">
-            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary" />
+         <div className='flex items-center justify-center min-h-screen'>
+            <div className='animate-spin rounded-full h-12 w-12 border-b-2 border-primary' />
          </div>
       );
    }
@@ -40,32 +40,32 @@ export default function AdminDashboardPage() {
    }
 
    return (
-      <div className="space-y-6">
+      <div className='space-y-6'>
          {/* Header */}
          <DashboardHeader
-            title="Admin Dashboard"
-            subtitle="Monitor and manage your DocChain system"
+            title='Admin Dashboard'
+            subtitle='Monitor and manage your DocChain system'
             showGreeting={false}
          />
 
          {/* Admin Stats Grid */}
-         <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
+         <div className='grid gap-4 md:grid-cols-2 lg:grid-cols-4'>
             <StatsCard
-               title="Total Users"
+               title='Total Users'
                value={156}
                icon={<Users size={24} />}
                trend={{ value: 12, label: "from last month", direction: "up" }}
-               variant="default"
+               variant='default'
             />
             <StatsCard
-               title="System Documents"
-               value="2,453"
+               title='System Documents'
+               value='2,453'
                icon={<FileText size={24} />}
                trend={{ value: 8, label: "from last month", direction: "up" }}
-               variant="default"
+               variant='default'
             />
             <StatsCard
-               title="Security Events"
+               title='Security Events'
                value={0}
                icon={<Shield size={24} />}
                trend={{
@@ -73,14 +73,14 @@ export default function AdminDashboardPage() {
                   label: "No threats detected",
                   direction: "neutral",
                }}
-               variant="success"
+               variant='success'
             />
             <StatsCard
-               title="System Uptime"
-               value="99.8%"
+               title='System Uptime'
+               value='99.8%'
                icon={<Activity size={24} />}
                trend={{ value: 0.2, label: "Last 30 days", direction: "up" }}
-               variant="success"
+               variant='success'
             />
          </div>
 
@@ -88,9 +88,9 @@ export default function AdminDashboardPage() {
          <SystemOverview />
 
          {/* Grid Layout for Activity and Blockchain */}
-         <div className="grid gap-6 lg:grid-cols-3">
+         <div className='grid gap-6 lg:grid-cols-3'>
             {/* Admin Activity Log - Takes 2 columns */}
-            <div className="lg:col-span-2">
+            <div className='lg:col-span-2'>
                <AdminActivityLog />
             </div>
 
@@ -107,50 +107,50 @@ export default function AdminDashboardPage() {
          </div>
 
          {/* Additional Admin Stats */}
-         <div className="grid gap-4 md:grid-cols-3">
-            <div className="p-6 rounded-lg border bg-card">
-               <div className="flex items-center gap-3 mb-3">
-                  <div className="p-3 rounded-lg bg-(--info)/10 text-(--info)">
+         <div className='grid gap-4 md:grid-cols-3'>
+            <div className='p-6 rounded-lg border bg-card'>
+               <div className='flex items-center gap-3 mb-3'>
+                  <div className='p-3 rounded-lg bg-(--info)/10 text-(--info)'>
                      <Server size={20} />
                   </div>
                   <div>
-                     <p className="text-sm text-muted-foreground">
+                     <p className='text-sm text-muted-foreground'>
                         API Requests
                      </p>
-                     <p className="text-2xl font-bold">1.2M</p>
+                     <p className='text-2xl font-bold'>1.2M</p>
                   </div>
                </div>
-               <p className="text-xs text-muted-foreground">Last 24 hours</p>
+               <p className='text-xs text-muted-foreground'>Last 24 hours</p>
             </div>
 
-            <div className="p-6 rounded-lg border bg-card">
-               <div className="flex items-center gap-3 mb-3">
-                  <div className="p-3 rounded-lg bg-(--success)/10 text-(--success)">
+            <div className='p-6 rounded-lg border bg-card'>
+               <div className='flex items-center gap-3 mb-3'>
+                  <div className='p-3 rounded-lg bg-(--success)/10 text-(--success)'>
                      <Database size={20} />
                   </div>
                   <div>
-                     <p className="text-sm text-muted-foreground">
+                     <p className='text-sm text-muted-foreground'>
                         Database Size
                      </p>
-                     <p className="text-2xl font-bold">145 GB</p>
+                     <p className='text-2xl font-bold'>145 GB</p>
                   </div>
                </div>
-               <p className="text-xs text-muted-foreground">61% of capacity</p>
+               <p className='text-xs text-muted-foreground'>61% of capacity</p>
             </div>
 
-            <div className="p-6 rounded-lg border bg-card">
-               <div className="flex items-center gap-3 mb-3">
-                  <div className="p-3 rounded-lg bg-(--warning)/10 text-(--warning)">
+            <div className='p-6 rounded-lg border bg-card'>
+               <div className='flex items-center gap-3 mb-3'>
+                  <div className='p-3 rounded-lg bg-(--warning)/10 text-(--warning)'>
                      <Lock size={20} />
                   </div>
                   <div>
-                     <p className="text-sm text-muted-foreground">
+                     <p className='text-sm text-muted-foreground'>
                         Active Sessions
                      </p>
-                     <p className="text-2xl font-bold">89</p>
+                     <p className='text-2xl font-bold'>89</p>
                   </div>
                </div>
-               <p className="text-xs text-muted-foreground">Concurrent users</p>
+               <p className='text-xs text-muted-foreground'>Concurrent users</p>
             </div>
          </div>
       </div>
