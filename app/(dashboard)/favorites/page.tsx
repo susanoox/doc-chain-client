@@ -22,7 +22,9 @@ const FavoritesPage: FC = () => {
    const [sortBy, setSortBy] = useState<"recent" | "name" | "size">("recent");
 
    // Filter only favorite documents
-   const favoriteDocuments = documents.filter((doc) => doc.isFavorite);
+   const favoriteDocuments = documents.filter(
+      (doc) => doc.isFavorite && !doc.isDeleted,
+   );
 
    // Sort favorites
    const sortedFavorites = [...favoriteDocuments].sort((a, b) => {
@@ -230,8 +232,8 @@ const FavoritesPage: FC = () => {
                         {Math.round(
                            favoriteDocuments.reduce(
                               (sum, d) => sum + d.fileSize,
-                              0
-                           ) / 1048576
+                              0,
+                           ) / 1048576,
                         )}
                         MB
                      </p>
@@ -245,7 +247,7 @@ const FavoritesPage: FC = () => {
                      "grid gap-6",
                      viewMode === "grid"
                         ? "grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4"
-                        : "grid-cols-1 max-w-4xl mx-auto"
+                        : "grid-cols-1 max-w-4xl mx-auto",
                   )}
                >
                   {sortedFavorites.map((document) => (

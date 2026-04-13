@@ -1,6 +1,6 @@
 "use client";
 
-import { FC, useState, FormEvent } from "react";
+import { FC, useEffect, useState, FormEvent } from "react";
 import { useUserStore } from "@/lib/stores/userStore";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -22,6 +22,14 @@ export const ProfileForm: FC = () => {
       bio: profile?.bio || "",
    });
    const [saved, setSaved] = useState(false);
+
+   useEffect(() => {
+      setFormData({
+         name: profile?.name || "",
+         email: profile?.email || "",
+         bio: profile?.bio || "",
+      });
+   }, [profile]);
 
    const handleSubmit = async (e: FormEvent) => {
       e.preventDefault();

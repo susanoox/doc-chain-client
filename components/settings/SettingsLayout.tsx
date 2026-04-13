@@ -1,7 +1,8 @@
 "use client";
 
-import { FC, ReactNode } from "react";
+import { FC, ReactNode, useEffect } from "react";
 import { SettingsSidebar } from "./SettingsSidebar";
+import { useUserStore } from "@/lib/stores/userStore";
 
 interface SettingsLayoutProps {
    children: ReactNode;
@@ -13,6 +14,13 @@ interface SettingsLayoutProps {
  * Follows Single Responsibility Principle - only handles settings layout structure
  */
 export const SettingsLayout: FC<SettingsLayoutProps> = ({ children }) => {
+   const { fetchProfile, fetchPreferences } = useUserStore();
+
+   useEffect(() => {
+      fetchProfile();
+      fetchPreferences();
+   }, [fetchProfile, fetchPreferences]);
+
    return (
       <div className='container mx-auto p-6 max-w-7xl'>
          <div className='flex flex-col lg:flex-row gap-8'>

@@ -33,7 +33,7 @@ const SharedPage: FC = () => {
 
    const [viewMode, setViewMode] = useState<"grid" | "list">("grid");
    const [sortBy, setSortBy] = useState<"recent" | "name" | "permission">(
-      "recent"
+      "recent",
    );
    const [permissionFilter, setPermissionFilter] = useState<
       "all" | "view" | "edit"
@@ -44,7 +44,7 @@ const SharedPage: FC = () => {
    // 1. User is not the owner
    // 2. Has been shared (shareCount > 0)
    const sharedDocuments = documents.filter((doc) => {
-      return doc.ownerId !== user?.id && doc.shareCount > 0;
+      return doc.ownerId !== user?.id && doc.shareCount > 0 && !doc.isDeleted;
    });
 
    // Apply permission filter
@@ -300,7 +300,7 @@ const SharedPage: FC = () => {
                      "grid gap-6",
                      viewMode === "grid"
                         ? "grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4"
-                        : "grid-cols-1 max-w-4xl mx-auto"
+                        : "grid-cols-1 max-w-4xl mx-auto",
                   )}
                >
                   {sortedDocuments.map((document) => {

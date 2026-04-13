@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
+import { isDemoModeEnabled } from "@/lib/config/demo";
 
 // Define public routes that don't require authentication
 const publicRoutes = [
@@ -16,16 +17,14 @@ export default function proxy(request: NextRequest) {
    const { pathname } = request.nextUrl;
 
    // Skip middleware in development with mock auth
-   const useMockAuth =
-      process.env.NEXT_PUBLIC_USE_MOCK_AUTH === "true" ||
-      process.env.NODE_ENV === "development";
+   const useMockAuth = isDemoModeEnabled();
    if (useMockAuth) {
       return NextResponse.next();
    }
 
    // Check if the route is public
    const isPublicRoute = publicRoutes.some((route) =>
-      pathname.startsWith(route)
+      pathname.startsWith(route),
    );
 
    // Get the token from cookies

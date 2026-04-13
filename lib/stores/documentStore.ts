@@ -11,6 +11,21 @@ import {
    ShareLink,
 } from "@/lib/types";
 import { User } from "@/lib/types/user";
+import {
+   addDemoComment,
+   addDemoShare,
+   createDemoAISummary,
+   createDemoBlockchainVerification,
+   createDemoShareLink,
+   demoDocuments,
+   demoUsers,
+   getDemoComments,
+   getDemoDocument,
+   getDemoShares,
+   getDemoVersions,
+   removeDemoShare,
+} from "@/lib/mocks/demoData";
+import { filterDocuments, sortDocuments } from "@/lib/utils/documentQueries";
 
 interface DocumentState {
    // Documents list
@@ -75,12 +90,12 @@ interface DocumentState {
    shareDocument: (
       documentId: string,
       userId: string,
-      permission: "view" | "edit" | "admin"
+      permission: "view" | "edit" | "admin",
    ) => Promise<void>;
    removeShare: (shareId: string) => Promise<void>;
    generateShareLink: (
       documentId: string,
-      options: ShareLinkOptions
+      options: ShareLinkOptions,
    ) => Promise<ShareLink>;
    fetchShares: (documentId: string) => Promise<void>;
 
@@ -99,231 +114,8 @@ const initialFilters: DocumentFilters = {
    owner: [],
 };
 
-// Mock Users
-const mockUsers: User[] = [
-   {
-      id: "user-1",
-      email: "admin@docchain.com",
-      name: "Admin User",
-      role: "admin",
-      avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=Admin",
-      bio: "System Administrator",
-      createdAt: new Date("2024-01-01"),
-      updatedAt: new Date("2024-01-01"),
-      mfaEnabled: true,
-      isActive: true,
-   },
-   {
-      id: "user-2",
-      email: "john@docchain.com",
-      name: "John Doe",
-      role: "editor",
-      avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=John",
-      bio: "Senior Editor",
-      createdAt: new Date("2024-02-01"),
-      updatedAt: new Date("2024-02-01"),
-      mfaEnabled: false,
-      isActive: true,
-   },
-   {
-      id: "user-3",
-      email: "jane@docchain.com",
-      name: "Jane Smith",
-      role: "viewer",
-      avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=Jane",
-      bio: "Document Viewer",
-      createdAt: new Date("2024-03-01"),
-      updatedAt: new Date("2024-03-01"),
-      mfaEnabled: false,
-      isActive: true,
-   },
-];
-
-// Mock Documents
-const mockDocuments: Document[] = [
-   {
-      id: "doc-1",
-      title: "Project Proposal 2025",
-      description:
-         "Comprehensive project proposal for Q1 2025 blockchain integration initiative",
-      fileName: "project-proposal-2025.pdf",
-      fileSize: 2457600, // 2.4 MB
-      mimeType: "application/pdf",
-      ownerId: "user-1",
-      owner: mockUsers[0],
-      tags: ["proposal", "blockchain", "Q1-2025"],
-      blockchainHash: "0x742d35Cc6634C0532925a3b844Bc9e7595f0bEb1",
-      blockchainVerified: true,
-      isEncrypted: true,
-      isFavorite: true,
-      isDeleted: false,
-      createdAt: new Date("2024-12-01"),
-      updatedAt: new Date("2024-12-15"),
-      version: 3,
-      shareCount: 5,
-      thumbnailUrl:
-         "https://via.placeholder.com/400x300/4f46e5/ffffff?text=Project+Proposal",
-   },
-   {
-      id: "doc-2",
-      title: "Smart Contract Specifications",
-      description:
-         "Technical specifications for document verification smart contracts",
-      fileName: "smart-contract-specs.docx",
-      fileSize: 1048576, // 1 MB
-      mimeType:
-         "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
-      ownerId: "user-2",
-      owner: mockUsers[1],
-      tags: ["smart-contract", "technical", "blockchain"],
-      blockchainHash: "0x8ba1f109551bD432803012645Ac136ddd64DBA72",
-      blockchainVerified: true,
-      isEncrypted: false,
-      isFavorite: false,
-      isDeleted: false,
-      createdAt: new Date("2024-11-15"),
-      updatedAt: new Date("2024-12-10"),
-      version: 5,
-      shareCount: 8,
-      thumbnailUrl:
-         "https://via.placeholder.com/400x300/10b981/ffffff?text=Smart+Contracts",
-   },
-   {
-      id: "doc-3",
-      title: "User Guide - Document Chain",
-      description: "Complete user guide for the Document Chain platform",
-      fileName: "user-guide.pdf",
-      fileSize: 5242880, // 5 MB
-      mimeType: "application/pdf",
-      ownerId: "user-1",
-      owner: mockUsers[0],
-      tags: ["documentation", "user-guide", "help"],
-      blockchainVerified: false,
-      isEncrypted: false,
-      isFavorite: true,
-      isDeleted: false,
-      createdAt: new Date("2024-10-20"),
-      updatedAt: new Date("2024-12-18"),
-      version: 12,
-      shareCount: 25,
-      thumbnailUrl:
-         "https://via.placeholder.com/400x300/f59e0b/ffffff?text=User+Guide",
-   },
-   {
-      id: "doc-4",
-      title: "Q4 Financial Report",
-      description: "Financial performance report for Q4 2024",
-      fileName: "q4-financial-report.xlsx",
-      fileSize: 3145728, // 3 MB
-      mimeType:
-         "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
-      ownerId: "user-2",
-      owner: mockUsers[1],
-      tags: ["finance", "report", "Q4-2024"],
-      blockchainHash: "0x4e83362442B8d1beC281594CEA3050c8EB01311C",
-      blockchainVerified: true,
-      isEncrypted: true,
-      isFavorite: false,
-      isDeleted: false,
-      createdAt: new Date("2024-12-20"),
-      updatedAt: new Date("2024-12-20"),
-      version: 1,
-      shareCount: 3,
-      thumbnailUrl:
-         "https://via.placeholder.com/400x300/06b6d4/ffffff?text=Financial+Report",
-   },
-   {
-      id: "doc-5",
-      title: "API Documentation v2.0",
-      description:
-         "REST API documentation for Document Chain platform version 2.0",
-      fileName: "api-docs-v2.pdf",
-      fileSize: 1572864, // 1.5 MB
-      mimeType: "application/pdf",
-      ownerId: "user-3",
-      owner: mockUsers[2],
-      tags: ["api", "documentation", "technical"],
-      blockchainHash: "0x2546BcD3c84621e976D8185a91A922aE77ECEc30",
-      blockchainVerified: true,
-      isEncrypted: false,
-      isFavorite: true,
-      isDeleted: false,
-      createdAt: new Date("2024-11-01"),
-      updatedAt: new Date("2024-12-05"),
-      version: 7,
-      shareCount: 15,
-      thumbnailUrl:
-         "https://via.placeholder.com/400x300/8b5cf6/ffffff?text=API+Docs",
-   },
-   {
-      id: "doc-6",
-      title: "Security Audit Report",
-      description: "Comprehensive security audit findings and recommendations",
-      fileName: "security-audit-2024.pdf",
-      fileSize: 4194304, // 4 MB
-      mimeType: "application/pdf",
-      ownerId: "user-1",
-      owner: mockUsers[0],
-      tags: ["security", "audit", "confidential"],
-      blockchainHash: "0xeC1D6163E05b0Cc4f4e8a0c97c76c4e0f7EE4b51",
-      blockchainVerified: true,
-      isEncrypted: true,
-      isFavorite: false,
-      isDeleted: false,
-      createdAt: new Date("2024-12-10"),
-      updatedAt: new Date("2024-12-12"),
-      version: 2,
-      shareCount: 2,
-      thumbnailUrl:
-         "https://via.placeholder.com/400x300/ef4444/ffffff?text=Security+Audit",
-   },
-   {
-      id: "doc-7",
-      title: "Marketing Strategy 2025",
-      description: "Marketing and growth strategy for 2025",
-      fileName: "marketing-strategy-2025.pptx",
-      fileSize: 8388608, // 8 MB
-      mimeType:
-         "application/vnd.openxmlformats-officedocument.presentationml.presentation",
-      ownerId: "user-2",
-      owner: mockUsers[1],
-      tags: ["marketing", "strategy", "2025"],
-      blockchainVerified: false,
-      isEncrypted: false,
-      isFavorite: false,
-      isDeleted: false,
-      createdAt: new Date("2024-12-05"),
-      updatedAt: new Date("2024-12-19"),
-      version: 4,
-      shareCount: 6,
-      thumbnailUrl:
-         "https://via.placeholder.com/400x300/ec4899/ffffff?text=Marketing+Strategy",
-   },
-   {
-      id: "doc-8",
-      title: "Team Meeting Notes - Dec 2024",
-      description: "Consolidated meeting notes from December 2024",
-      fileName: "meeting-notes-dec-2024.txt",
-      fileSize: 524288, // 512 KB
-      mimeType: "text/plain",
-      ownerId: "user-3",
-      owner: mockUsers[2],
-      tags: ["meeting-notes", "december", "team"],
-      blockchainVerified: false,
-      isEncrypted: false,
-      isFavorite: true,
-      isDeleted: false,
-      createdAt: new Date("2024-12-01"),
-      updatedAt: new Date("2024-12-22"),
-      version: 8,
-      shareCount: 12,
-      thumbnailUrl:
-         "https://via.placeholder.com/400x300/64748b/ffffff?text=Meeting+Notes",
-   },
-];
-
 export const useDocumentStore = create<DocumentState>((set, get) => ({
-   documents: mockDocuments,
+   documents: demoDocuments,
    currentDocument: null,
    filters: initialFilters,
    sortBy: "recent",
@@ -345,19 +137,16 @@ export const useDocumentStore = create<DocumentState>((set, get) => ({
          const currentFilters = filters || get().filters;
          const sortBy = get().sortBy;
 
-         // TODO: Replace with actual API call
-         const response = await fetch(
-            "/api/documents?" +
-               new URLSearchParams({
-                  ...currentFilters,
-                  sortBy,
-               } as any)
+         const filteredDocuments = filterDocuments(
+            demoDocuments,
+            currentFilters,
+            {
+               includeDeleted: true,
+            },
          );
+         const sortedDocuments = sortDocuments(filteredDocuments, sortBy);
 
-         if (!response.ok) throw new Error("Failed to fetch documents");
-
-         const documents = await response.json();
-         set({ documents, isLoading: false });
+         set({ documents: sortedDocuments, isLoading: false });
       } catch (error) {
          set({
             error:
@@ -401,27 +190,33 @@ export const useDocumentStore = create<DocumentState>((set, get) => ({
    uploadDocument: async (file, metadata) => {
       set({ isUploading: true, uploadProgress: 0, error: null });
       try {
-         const formData = new FormData();
-         formData.append("file", file);
-         formData.append("metadata", JSON.stringify(metadata));
+         const document: Document = {
+            id: `doc-${Date.now()}`,
+            title: metadata.title,
+            description: metadata.description,
+            fileName: file.name,
+            fileSize: file.size,
+            mimeType: file.type || "application/octet-stream",
+            ownerId: demoUsers[0].id,
+            owner: demoUsers[0],
+            tags: metadata.tags,
+            blockchainVerified: false,
+            isEncrypted: metadata.isEncrypted,
+            isFavorite: false,
+            isDeleted: false,
+            createdAt: new Date(),
+            updatedAt: new Date(),
+            version: 1,
+            shareCount: 0,
+         };
 
-         // TODO: Replace with actual API call with progress tracking
-         const response = await fetch("/api/documents/upload", {
-            method: "POST",
-            body: formData,
-         });
+         demoDocuments.unshift(document);
 
-         if (!response.ok) throw new Error("Upload failed");
-
-         const document = await response.json();
          set((state) => ({
             documents: [document, ...state.documents],
             isUploading: false,
             uploadProgress: 100,
          }));
-
-         // Refresh documents list
-         await get().fetchDocuments();
       } catch (error) {
          set({
             error: error instanceof Error ? error.message : "Upload failed",
@@ -435,11 +230,20 @@ export const useDocumentStore = create<DocumentState>((set, get) => ({
    fetchDocument: async (id) => {
       set({ isLoading: true, error: null });
       try {
-         const response = await fetch(`/api/documents/${id}`);
-         if (!response.ok) throw new Error("Failed to fetch document");
+         const document = getDemoDocument(id);
 
-         const document = await response.json();
-         set({ currentDocument: document, isLoading: false });
+         if (!document) {
+            throw new Error("Failed to fetch document");
+         }
+
+         set({
+            currentDocument: document,
+            comments: getDemoComments(id),
+            versions: getDemoVersions(id),
+            shares: getDemoShares(id),
+            aiSummary: createDemoAISummary(document).summary,
+            isLoading: false,
+         });
       } catch (error) {
          set({
             error:
@@ -454,18 +258,26 @@ export const useDocumentStore = create<DocumentState>((set, get) => ({
    updateDocument: async (id, data) => {
       set({ isLoading: true, error: null });
       try {
-         const response = await fetch(`/api/documents/${id}`, {
-            method: "PUT",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify(data),
-         });
+         const existingDocument = getDemoDocument(id);
 
-         if (!response.ok) throw new Error("Failed to update document");
+         if (!existingDocument) {
+            throw new Error("Failed to update document");
+         }
 
-         const updatedDocument = await response.json();
+         const updatedDocument: Document = {
+            ...existingDocument,
+            ...data,
+            updatedAt: new Date(),
+         };
+
+         const documentIndex = demoDocuments.findIndex((doc) => doc.id === id);
+         if (documentIndex >= 0) {
+            demoDocuments[documentIndex] = updatedDocument;
+         }
+
          set((state) => ({
             documents: state.documents.map((doc) =>
-               doc.id === id ? updatedDocument : doc
+               doc.id === id ? updatedDocument : doc,
             ),
             currentDocument:
                state.currentDocument?.id === id
@@ -488,17 +300,20 @@ export const useDocumentStore = create<DocumentState>((set, get) => ({
    deleteDocument: async (id) => {
       set({ isLoading: true, error: null });
       try {
-         const response = await fetch(`/api/documents/${id}`, {
-            method: "DELETE",
-         });
-
-         if (!response.ok) throw new Error("Failed to delete document");
+         const document = demoDocuments.find((doc) => doc.id === id);
+         if (document) {
+            document.isDeleted = true;
+            document.deletedAt = new Date();
+            document.updatedAt = new Date();
+         }
 
          set((state) => ({
             documents: state.documents.filter((doc) => doc.id !== id),
             selectedDocuments: state.selectedDocuments.filter(
-               (docId) => docId !== id
+               (docId) => docId !== id,
             ),
+            currentDocument:
+               state.currentDocument?.id === id ? null : state.currentDocument,
             isLoading: false,
          }));
       } catch (error) {
@@ -516,13 +331,13 @@ export const useDocumentStore = create<DocumentState>((set, get) => ({
    deleteMultiple: async (ids) => {
       set({ isLoading: true, error: null });
       try {
-         const response = await fetch("/api/documents/bulk-delete", {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ ids }),
+         demoDocuments.forEach((document) => {
+            if (ids.includes(document.id)) {
+               document.isDeleted = true;
+               document.deletedAt = new Date();
+               document.updatedAt = new Date();
+            }
          });
-
-         if (!response.ok) throw new Error("Failed to delete documents");
 
          set((state) => ({
             documents: state.documents.filter((doc) => !ids.includes(doc.id)),
@@ -544,23 +359,37 @@ export const useDocumentStore = create<DocumentState>((set, get) => ({
    verifyBlockchain: async (id) => {
       set({ isVerifying: true, error: null });
       try {
-         const response = await fetch(`/api/documents/${id}/verify`, {
-            method: "POST",
-         });
+         const document = getDemoDocument(id);
 
-         if (!response.ok) throw new Error("Verification failed");
+         if (!document) {
+            throw new Error("Verification failed");
+         }
 
-         const verification = await response.json();
+         const verification = createDemoBlockchainVerification(document, true);
          set({ isVerifying: false });
+
+         const documentIndex = demoDocuments.findIndex((doc) => doc.id === id);
+         if (documentIndex >= 0) {
+            demoDocuments[documentIndex] = {
+               ...demoDocuments[documentIndex],
+               blockchainVerified: verification.verified,
+            };
+         }
 
          // Update document with verification status
          set((state) => ({
-            currentDocument: state.currentDocument
-               ? {
-                    ...state.currentDocument,
-                    blockchainVerified: verification.verified,
-                 }
-               : null,
+            documents: state.documents.map((doc) =>
+               doc.id === id
+                  ? { ...doc, blockchainVerified: verification.verified }
+                  : doc,
+            ),
+            currentDocument:
+               state.currentDocument?.id === id
+                  ? {
+                       ...state.currentDocument,
+                       blockchainVerified: verification.verified,
+                    }
+                  : state.currentDocument,
          }));
       } catch (error) {
          set({
@@ -575,11 +404,14 @@ export const useDocumentStore = create<DocumentState>((set, get) => ({
    generateAISummary: async (id) => {
       set({ isLoading: true, error: null });
       try {
-         const response = await fetch(`/api/documents/${id}/summary`);
-         if (!response.ok) throw new Error("Failed to generate summary");
+         const document = getDemoDocument(id);
 
-         const { summary } = await response.json();
-         set({ aiSummary: summary, isLoading: false });
+         if (!document) {
+            throw new Error("Failed to generate summary");
+         }
+
+         const summary = createDemoAISummary(document);
+         set({ aiSummary: summary.summary, isLoading: false });
       } catch (error) {
          set({
             error:
@@ -594,15 +426,14 @@ export const useDocumentStore = create<DocumentState>((set, get) => ({
    addComment: async (documentId, text) => {
       set({ isLoading: true, error: null });
       try {
-         const response = await fetch(`/api/documents/${documentId}/comments`, {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ text }),
-         });
+         const comment = addDemoComment(documentId, text);
+         const document = demoDocuments.find(
+            (entry) => entry.id === documentId,
+         );
+         if (document) {
+            document.updatedAt = new Date();
+         }
 
-         if (!response.ok) throw new Error("Failed to add comment");
-
-         const comment = await response.json();
          set((state) => ({
             comments: [...state.comments, comment],
             isLoading: false,
@@ -619,10 +450,7 @@ export const useDocumentStore = create<DocumentState>((set, get) => ({
 
    fetchComments: async (documentId) => {
       try {
-         const response = await fetch(`/api/documents/${documentId}/comments`);
-         if (!response.ok) throw new Error("Failed to fetch comments");
-
-         const comments = await response.json();
+         const comments = getDemoComments(documentId);
          set({ comments });
       } catch (error) {
          console.error("Failed to fetch comments:", error);
@@ -631,10 +459,7 @@ export const useDocumentStore = create<DocumentState>((set, get) => ({
 
    fetchVersions: async (documentId) => {
       try {
-         const response = await fetch(`/api/documents/${documentId}/versions`);
-         if (!response.ok) throw new Error("Failed to fetch versions");
-
-         const versions = await response.json();
+         const versions = getDemoVersions(documentId);
          set({ versions });
       } catch (error) {
          console.error("Failed to fetch versions:", error);
@@ -644,15 +469,26 @@ export const useDocumentStore = create<DocumentState>((set, get) => ({
    shareDocument: async (documentId, userId, permission) => {
       set({ isLoading: true, error: null });
       try {
-         const response = await fetch(`/api/documents/${documentId}/share`, {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ userId, permission }),
-         });
+         const sharedWith = demoUsers.find((user) => user.id === userId);
 
-         if (!response.ok) throw new Error("Failed to share document");
+         if (!sharedWith) {
+            throw new Error("Failed to share document");
+         }
 
-         const share = await response.json();
+         const share = addDemoShare(
+            documentId,
+            sharedWith,
+            permission === "admin" ? "edit" : permission,
+         );
+
+         const document = demoDocuments.find(
+            (entry) => entry.id === documentId,
+         );
+         if (document) {
+            document.shareCount += 1;
+            document.updatedAt = new Date();
+         }
+
          set((state) => ({
             shares: [...state.shares, share],
             isLoading: false,
@@ -672,11 +508,20 @@ export const useDocumentStore = create<DocumentState>((set, get) => ({
    removeShare: async (shareId) => {
       set({ isLoading: true, error: null });
       try {
-         const response = await fetch(`/api/documents/shares/${shareId}`, {
-            method: "DELETE",
-         });
+         const matchingShare = getDemoShares(
+            get().currentDocument?.id || "",
+         ).find((entry) => entry.id === shareId);
+         if (matchingShare) {
+            const document = demoDocuments.find(
+               (entry) => entry.id === matchingShare.documentId,
+            );
+            if (document && document.shareCount > 0) {
+               document.shareCount -= 1;
+               document.updatedAt = new Date();
+            }
+         }
 
-         if (!response.ok) throw new Error("Failed to remove share");
+         removeDemoShare(shareId);
 
          set((state) => ({
             shares: state.shares.filter((share) => share.id !== shareId),
@@ -697,18 +542,13 @@ export const useDocumentStore = create<DocumentState>((set, get) => ({
    generateShareLink: async (documentId, options) => {
       set({ isLoading: true, error: null });
       try {
-         const response = await fetch(
-            `/api/documents/${documentId}/share-link`,
-            {
-               method: "POST",
-               headers: { "Content-Type": "application/json" },
-               body: JSON.stringify(options),
-            }
-         );
+         const document = getDemoDocument(documentId);
 
-         if (!response.ok) throw new Error("Failed to generate share link");
+         if (!document) {
+            throw new Error("Failed to generate share link");
+         }
 
-         const shareLink = await response.json();
+         const shareLink = createDemoShareLink(documentId, options);
          set({ isLoading: false });
          return shareLink;
       } catch (error) {
@@ -725,10 +565,7 @@ export const useDocumentStore = create<DocumentState>((set, get) => ({
 
    fetchShares: async (documentId) => {
       try {
-         const response = await fetch(`/api/documents/${documentId}/shares`);
-         if (!response.ok) throw new Error("Failed to fetch shares");
-
-         const shares = await response.json();
+         const shares = getDemoShares(documentId);
          set({ shares });
       } catch (error) {
          console.error("Failed to fetch shares:", error);
@@ -741,15 +578,19 @@ export const useDocumentStore = create<DocumentState>((set, get) => ({
          const document = get().documents.find((doc) => doc.id === documentId);
          const isFavorite = document?.isFavorite;
 
-         const response = await fetch(`/api/favorites/${documentId}`, {
-            method: isFavorite ? "DELETE" : "POST",
-         });
-
-         if (!response.ok) throw new Error("Failed to toggle favorite");
+         const demoDocument = demoDocuments.find(
+            (entry) => entry.id === documentId,
+         );
+         if (demoDocument) {
+            demoDocument.isFavorite = !isFavorite;
+            demoDocument.updatedAt = new Date();
+         }
 
          set((state) => ({
             documents: state.documents.map((doc) =>
-               doc.id === documentId ? { ...doc, isFavorite: !isFavorite } : doc
+               doc.id === documentId
+                  ? { ...doc, isFavorite: !isFavorite }
+                  : doc,
             ),
             currentDocument:
                state.currentDocument?.id === documentId
@@ -772,17 +613,20 @@ export const useDocumentStore = create<DocumentState>((set, get) => ({
    restoreDocument: async (documentId) => {
       set({ isLoading: true, error: null });
       try {
-         const response = await fetch(`/api/documents/${documentId}/restore`, {
-            method: "POST",
-         });
-
-         if (!response.ok) throw new Error("Failed to restore document");
+         const document = demoDocuments.find(
+            (entry) => entry.id === documentId,
+         );
+         if (document) {
+            document.isDeleted = false;
+            delete document.deletedAt;
+            document.updatedAt = new Date();
+         }
 
          set((state) => ({
             documents: state.documents.map((doc) =>
                doc.id === documentId
                   ? { ...doc, isDeleted: false, deletedAt: undefined }
-                  : doc
+                  : doc,
             ),
             isLoading: false,
          }));
@@ -801,25 +645,31 @@ export const useDocumentStore = create<DocumentState>((set, get) => ({
    permanentlyDeleteDocument: async (documentId) => {
       set({ isLoading: true, error: null });
       try {
-         const response = await fetch(
-            `/api/documents/${documentId}/permanent`,
-            {
-               method: "DELETE",
-            }
+         const documentIndex = demoDocuments.findIndex(
+            (entry) => entry.id === documentId,
          );
-
-         if (!response.ok)
-            throw new Error("Failed to permanently delete document");
+         if (documentIndex >= 0) {
+            demoDocuments.splice(documentIndex, 1);
+         }
 
          set((state) => ({
             documents: state.documents.filter((doc) => doc.id !== documentId),
             selectedDocuments: state.selectedDocuments.filter(
-               (id) => id !== documentId
+               (id) => id !== documentId,
             ),
             currentDocument:
                state.currentDocument?.id === documentId
                   ? null
                   : state.currentDocument,
+            shares: state.shares.filter(
+               (share) => share.documentId !== documentId,
+            ),
+            comments: state.comments.filter(
+               (comment) => comment.documentId !== documentId,
+            ),
+            versions: state.versions.filter(
+               (version) => version.documentId !== documentId,
+            ),
             isLoading: false,
          }));
       } catch (error) {
@@ -838,7 +688,7 @@ export const useDocumentStore = create<DocumentState>((set, get) => ({
 
    reset: () =>
       set({
-         documents: [],
+         documents: demoDocuments,
          currentDocument: null,
          filters: initialFilters,
          sortBy: "recent",

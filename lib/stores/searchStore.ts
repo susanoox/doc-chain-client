@@ -1,6 +1,9 @@
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
 import { Document } from "@/lib/types/document";
+import { demoDocuments } from "@/lib/mocks/demoData";
+import { filterDocuments, sortDocuments } from "@/lib/utils/documentQueries";
+import { useDocumentStore } from "@/lib/stores/documentStore";
 
 export interface SearchQuery {
    id: string;
@@ -82,7 +85,7 @@ interface SearchState {
    addToHistory: (
       query: string,
       filters: SearchFilters,
-      resultsCount: number
+      resultsCount: number,
    ) => void;
    clearHistory: () => void;
    removeFromHistory: (id: string) => void;
@@ -92,7 +95,7 @@ interface SearchState {
       name: string,
       query: string,
       filters: SearchFilters,
-      isAlert?: boolean
+      isAlert?: boolean,
    ) => void;
    deleteSavedSearch: (id: string) => void;
    executeSavedSearch: (id: string) => Promise<void>;
@@ -111,73 +114,8 @@ interface SearchState {
    getRecentSearches: (limit?: number) => SearchQuery[];
 }
 
-// Mock search function (will be replaced with real API)
-const mockSearch = async (
-   query: string,
-   filters: SearchFilters
-): Promise<SearchResult[]> => {
-   // Simulate API delay
-   await new Promise((resolve) =>
-      setTimeout(resolve, 300 + Math.random() * 700)
-   );
-
-   // Mock results with highlights
-   const mockResults: SearchResult[] = [
-      {
-         id: "search-result-1",
-         title: "Project Proposal 2025",
-         description:
-            "Comprehensive project proposal for Q1 2025 blockchain integration initiative",
-         fileName: "project-proposal-2025.pdf",
-         fileSize: 2457600,
-         mimeType: "application/pdf",
-         ownerId: "user-1",
-         owner: {
-            id: "user-1",
-            email: "admin@docchain.com",
-            name: "Admin User",
-            role: "admin",
-            createdAt: new Date(),
-            updatedAt: new Date(),
-            mfaEnabled: true,
-            isActive: true,
-         },
-         tags: ["proposal", "blockchain", "Q1-2025"],
-         blockchainHash: "0x742d35Cc6634C0532925a3b844Bc9e7595f0bEb1",
-         blockchainVerified: true,
-         isEncrypted: true,
-         isFavorite: true,
-         isDeleted: false,
-         createdAt: new Date("2024-12-01"),
-         updatedAt: new Date("2024-12-15"),
-         version: 3,
-         shareCount: 5,
-         thumbnailUrl:
-            "https://via.placeholder.com/400x300/4f46e5/ffffff?text=Project+Proposal",
-         score: 0.95,
-         highlights: {
-            title: "**Project** Proposal 2025",
-            description:
-               "Comprehensive project **proposal** for Q1 2025 **blockchain** integration initiative",
-         },
-      },
-   ];
-
-   return mockResults.filter((result) => {
-      const queryLower = query.toLowerCase();
-      const titleMatch = result.title.toLowerCase().includes(queryLower);
-      const descMatch = result.description?.toLowerCase().includes(queryLower);
-      const tagMatch = result.tags.some((tag) =>
-         tag.toLowerCase().includes(queryLower)
-      );
-
-      return titleMatch || descMatch || tagMatch;
-   });
-};
-
-// Mock AI suggestions
 const mockAISuggestions = async (
-   query: string
+   query: string,
 ): Promise<AISearchSuggestion[]> => {
    await new Promise((resolve) => setTimeout(resolve, 200));
 
@@ -250,7 +188,36 @@ export const useSearchStore = create<SearchState>()(
             set({ isSearching: true, searchError: null });
 
             try {
-               const results = await mockSearch(searchQuery, searchFilters);
+               await new Promise((resolve) =>
+                  setTimeout(resolve, 200 + Math.random() * 300),
+               );
+
+               const documents = sortDocuments(
+                  filterDocuments(demoDocuments, {
+                     search: searchQuery,
+                     tags: searchFilters.tags,
+                     owner: searchFilters.owners,
+                     blockchainVerified: searchFilters.blockchainVerified,
+                     isEncrypted: searchFilters.isEncrypted,
+                     isFavorite: searchFilters.isFavorite,
+                     dateFrom: searchFilters.dateFrom,
+                     dateTo: searchFilters.dateTo,
+                  }),
+                  "recent",
+               );
+
+               const results: SearchResult[] = documents.map((document) => ({
+                  ...document,
+                  score: document.title
+                     .toLowerCase()
+                     .includes(searchQuery.toLowerCase())
+                     ? 0.95
+                     : 0.7,
+                  highlights: {
+                     title: document.title,
+                     description: document.description,
+                  },
+               }));
 
                set({
                   results,
@@ -298,7 +265,7 @@ export const useSearchStore = create<SearchState>()(
          removeFromHistory: (id) =>
             set((state) => ({
                searchHistory: state.searchHistory.filter(
-                  (item) => item.id !== id
+                  (item) => item.id !== id,
                ),
             })),
 
@@ -321,7 +288,7 @@ export const useSearchStore = create<SearchState>()(
          deleteSavedSearch: (id) =>
             set((state) => ({
                savedSearches: state.savedSearches.filter(
-                  (search) => search.id !== id
+                  (search) => search.id !== id,
                ),
             })),
 
@@ -398,6 +365,6 @@ export const useSearchStore = create<SearchState>()(
             viewMode: state.viewMode,
             sortBy: state.sortBy,
          }),
-      }
-   )
+      },
+   ),
 );

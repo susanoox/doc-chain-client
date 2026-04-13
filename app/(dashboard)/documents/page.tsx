@@ -99,6 +99,7 @@ const DocumentsPage: FC = () => {
       removeShare,
       generateShareLink,
    } = useDocumentStore();
+   const activeDocuments = documents.filter((document) => !document.isDeleted);
 
    // Fetch documents on mount and when filters/sort change
    useEffect(() => {
@@ -114,7 +115,7 @@ const DocumentsPage: FC = () => {
       } catch (error: any) {
          toast.error(
             "Upload failed",
-            error.message || "Failed to upload document"
+            error.message || "Failed to upload document",
          );
       }
    };
@@ -160,7 +161,7 @@ const DocumentsPage: FC = () => {
          await verifyBlockchain(id);
          toast.success(
             "Verification started",
-            "Document is being verified on blockchain"
+            "Document is being verified on blockchain",
          );
       } catch (error: any) {
          toast.error("Verification failed", error.message);
@@ -180,7 +181,7 @@ const DocumentsPage: FC = () => {
    const handleBulkDelete = async () => {
       if (
          confirm(
-            `Are you sure you want to delete ${selectedDocuments.length} document(s)?`
+            `Are you sure you want to delete ${selectedDocuments.length} document(s)?`,
          )
       ) {
          try {
@@ -199,7 +200,7 @@ const DocumentsPage: FC = () => {
          }
          toast.success(
             "Verification started",
-            `${selectedDocuments.length} document(s) are being verified`
+            `${selectedDocuments.length} document(s) are being verified`,
          );
       } catch (error: any) {
          toast.error("Verification failed", error.message);
@@ -280,21 +281,23 @@ const DocumentsPage: FC = () => {
             <ShareModal
                open={shareModalOpen}
                onOpenChange={setShareModalOpen}
-               document={documents.find((d) => d.id === documentToShare)!}
+               document={activeDocuments.find((d) => d.id === documentToShare)!}
             >
                <ShareDocument
-                  document={documents.find((d) => d.id === documentToShare)!}
+                  document={
+                     activeDocuments.find((d) => d.id === documentToShare)!
+                  }
                   shares={shares}
                   availableUsers={MOCK_USERS}
                   onShare={async (
                      userId: string,
-                     permission: PermissionLevel
+                     permission: PermissionLevel,
                   ) => {
                      try {
                         await shareDocument(
                            documentToShare,
                            userId,
-                           permission
+                           permission,
                         );
                         toast.success("Document shared successfully");
                         fetchShares(documentToShare);

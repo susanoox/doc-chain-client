@@ -1,5 +1,6 @@
 import { apiClient } from "./api";
 import { LoginCredentials, RegisterData, User } from "@/lib/types";
+import { isDemoModeEnabled } from "@/lib/config/demo";
 
 // Mock users for testing
 const MOCK_USERS = {
@@ -39,22 +40,7 @@ const MOCK_USERS = {
 
 // Check if we're in development mode or demo mode and should use mock authentication
 const shouldUseMockAuth = () => {
-   // Check both client and server side
-   if (typeof window !== "undefined") {
-      // Client side - check environment variable or default to true in development
-      return (
-         process.env.NEXT_PUBLIC_USE_MOCK_AUTH === "true" ||
-         process.env.NEXT_PUBLIC_DEMO_MODE === "true" ||
-         (process.env.NEXT_PUBLIC_USE_MOCK_AUTH !== "false" &&
-            process.env.NODE_ENV === "development")
-      );
-   }
-   // Server side
-   return (
-      process.env.NEXT_PUBLIC_USE_MOCK_AUTH === "true" ||
-      process.env.NEXT_PUBLIC_DEMO_MODE === "true" ||
-      process.env.NODE_ENV === "development"
-   );
+   return isDemoModeEnabled();
 };
 
 export const authService = {
@@ -66,7 +52,7 @@ export const authService = {
          const mockUser = Object.values(MOCK_USERS).find(
             (u) =>
                u.email === credentials.email &&
-               u.password === credentials.password
+               u.password === credentials.password,
          );
 
          if (mockUser) {
@@ -85,14 +71,35 @@ export const authService = {
 
       return apiClient.post<{ user: User; token: string }>(
          "/auth/login",
-         credentials
+         credentials,
       );
    },
 
    register: async (data: RegisterData) => {
+      if (shouldUseMockAuth()) {
+         await new Promise((resolve) => setTimeout(resolve, 500));
+
+         const user: User = {
+            id: `user-${Date.now()}`,
+            email: data.email,
+            name: data.name,
+            role: "viewer",
+            avatar: undefined,
+            createdAt: new Date(),
+            updatedAt: new Date(),
+            mfaEnabled: false,
+            isActive: true,
+         };
+
+         return {
+            user,
+            token: `mock-user-token-${Date.now()}`,
+         };
+      }
+
       return apiClient.post<{ user: User; token: string }>(
          "/auth/register",
-         data
+         data,
       );
    },
 
@@ -101,10 +108,20 @@ export const authService = {
    },
 
    forgotPassword: async (email: string) => {
+      if (shouldUseMockAuth()) {
+         await new Promise((resolve) => setTimeout(resolve, 300));
+         return { message: `Password reset instructions sent to ${email}` };
+      }
+
       return apiClient.post("/auth/forgot-password", { email });
    },
 
    resetPassword: async (token: string, newPassword: string) => {
+      if (shouldUseMockAuth()) {
+         await new Promise((resolve) => setTimeout(resolve, 300));
+         return { message: "Password reset successful" };
+      }
+
       return apiClient.post("/auth/reset-password", { token, newPassword });
    },
 

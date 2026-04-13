@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import { AppSidebar } from "@/components/layout/AppSidebar";
 import { AppHeader } from "@/components/layout/AppHeader";
 import { MobileMenu } from "@/components/layout/MobileMenu";
+import { isDemoModeEnabled } from "@/lib/config/demo";
 import { useUIStore } from "@/lib/stores/uiStore";
 import { useAuth } from "@/lib/hooks/useAuth";
 import { cn } from "@/lib/utils";
@@ -19,9 +20,7 @@ export default function DashboardLayout({
    const router = useRouter();
 
    // Skip auth check in development with mock auth
-   const useMockAuth =
-      process.env.NEXT_PUBLIC_USE_MOCK_AUTH === "true" ||
-      process.env.NODE_ENV === "development";
+   const useMockAuth = isDemoModeEnabled();
 
    useEffect(() => {
       if (!useMockAuth && !isLoading && !isAuthenticated) {
@@ -50,7 +49,7 @@ export default function DashboardLayout({
          <div
             className={cn(
                "transition-all duration-300",
-               sidebarCollapsed ? "lg:pl-16" : "lg:pl-64"
+               sidebarCollapsed ? "lg:pl-16" : "lg:pl-64",
             )}
          >
             {/* Header */}
